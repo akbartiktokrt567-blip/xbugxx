@@ -1,0 +1,88 @@
+{
+  "botConfig": {
+    "ownerId": 6143435003,
+    "resellers": []
+  },
+  "users": {
+    "pepet": {
+      "username": "pepet",
+      "password": "123",
+      "status": "Owner",
+      "activeUntil": "9999-12-31",
+      "limit": 10000,
+      "whatsappSenders": []
+    },
+    "userbiasa": {
+      "username": "userbiasa",
+      "password": "123",
+      "status": "User",
+      "activeUntil": "2026-12-31",
+      "limit": 10,
+      "whatsappSenders": []
+    },
+    "bebas": {
+      "username": "bebas",
+      "password": "123",
+      "status": "User",
+      "activeUntil": "2026-12-31",
+      "limit": 10,
+      "whatsappSenders": []
+    },
+    "ngetestt": {
+      "username": "ngetestt",
+      "password": "123",
+      "status": "VIP",
+      "activeUntil": "2026-07-14",
+      "limit": 1000,
+      "whatsappSenders": []
+    },
+    "panness": {
+      "username": "panness",
+      "password": "hyz4l3",
+      "status": "Owner",
+      "activeUntil": "9999-12-31",
+      "limit": 10000,
+      "whatsappSenders": []
+    },
+    "halo": {
+      "username": "halo",
+      "password": "2eor04",
+      "status": "Reseller",
+      "activeUntil": "2026-07-14",
+      "limit": 1000,
+      "whatsappSenders": []
+    }
+  },
+  "history": {
+    "ngetestt": [],
+    "pepet": [],
+    "panness": [],
+    "halo": []
+  },
+  "chats": [
+    {
+      "username": "pepet",
+      "status": "Owner",
+      "message": "yooo",
+      "date": "2026-06-14 11:24:49"
+    },
+    {
+      "username": "ngetestt",
+      "status": "VIP",
+      "message": "hai",
+      "date": "2026-06-14 12:07:35"
+    },
+    {
+      "username": "pepet",
+      "status": "Owner",
+      "message": "Test message by Owner pepet.",
+      "date": "2026-06-14 12:08:54"
+    },
+    {
+      "username": "panness",
+      "status": "Owner",
+      "message": "tes global cik",
+      "date": "2026-06-14 12:42:02"
+    }
+  ]
+}

@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BARZX PREDATOR DASHBOARD</title>
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#050508',
+            foreground: '#e4e4e7',
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Standalone custom styles and animations -->
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="theme-color" content="#050508">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/img/icon-192.png">
+</head>
+
+<body class="min-h-full flex flex-col bg-background text-foreground pb-[88px] relative">
+  <!-- Animated background mesh -->
+  <div class="bg-mesh"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 w-full max-w-[430px] mx-auto min-h-[100vh] flex flex-col">
+
+    <!-- Access Denied Screen (displayed if unauthorized/user not found) -->
+    <div id="accessDeniedScreen"
+      class="hidden relative z-10 w-full max-w-[430px] mx-auto min-h-[100vh] flex flex-col justify-center px-6">
+      <div class="glass p-8 text-center anim-slide-up relative overflow-hidden">
+        <div
+          class="absolute -top-10 left-1/2 -translate-x-1/2 w-60 h-60 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+        </div>
+        <div class="relative space-y-6">
+          <div
+            class="w-20 h-20 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(239,68,68,0.1)]">
+            <span class="text-4xl">🔒</span>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold tracking-[0.2em] text-white">ACCESS DENIED</h2>
+            <p class="text-[9px] tracking-[0.15em] text-red-400 mt-1 font-semibold">NODE UNREGISTERED</p>
+          </div>
+          <p class="text-xs text-zinc-400 leading-relaxed tracking-wide">
+            This username <span id="unregisteredUsername" class="text-zinc-200 font-mono font-bold">""</span> is not
+            registered in the system database. Accounts must be provisioned via the secure Telegram gateway by an Owner
+            or Reseller.
+          </p>
+          <div class="p-4 rounded-xl bg-zinc-950/45 border border-zinc-800/80 text-left space-y-2">
+            <p class="text-[10px] text-zinc-500 tracking-wider font-bold">REGISTRATION PROCESS</p>
+            <p class="text-[11px] text-zinc-400 leading-relaxed font-sans">
+              1. Contact the Telegram Bot or administrator.<br>
+              2. Request user registration using your username.<br>
+              3. Access this URL using the generated link.
+            </p>
+          </div>
+          <div class="pt-2">
+            <a href="https://t.me/VannessWangsaff" target="_blank" rel="noreferrer"
+              class="btn-primary w-full inline-flex items-center justify-center gap-2 text-center text-xs py-3.5">
+              <span class="relative z-10">OPEN TELEGRAM BOT</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-6">
+        <p class="text-[10px] tracking-[0.2em] text-zinc-600 font-bold">CREDIT BY @VANNESSWANGSAFF</p>
+      </div>
+    </div>
+
+    <!-- Authorized Content Panel -->
+    <div id="authorizedPanel" class="hidden flex flex-col flex-1">
+
+      <!-- ── HEADER ── -->
+      <header class="flex justify-between items-center px-5 pt-8 pb-4">
+        <div class="flex items-center gap-3.5">
+          <button id="openSidebarButton"
+            class="w-10 h-10 rounded-2xl glass flex items-center justify-center hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+            <!-- Hamburger Icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-lg font-bold tracking-[0.2em] text-white">DASHBOARD</h1>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <p class="text-[9px] tracking-[0.15em] text-zinc-600">BARZX 1.0</p>
+              <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+              <span id="apiStatusBadge"
+                class="inline-flex items-center gap-1 text-[8px] font-bold tracking-wider text-emerald-400">
+                <span id="apiStatusDot" class="w-1 h-1 rounded-full bg-emerald-400 glow-dot"></span>
+                <span id="apiStatusText">API ONLINE</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ── CONTENT TAB VIEWER ── -->
+      <main id="tabContentContainer" class="flex-1 px-5 overflow-y-auto">
+
+        <!-- ═══ HOME TAB ═══ -->
+        <div id="tab-dashboard" class="tab-pane space-y-5 hidden">
+
+          <!-- Profile Capsule Section -->
+          <section
+            class="glass rounded-[30px] p-5 relative overflow-hidden anim-slide-up anim-stagger-1 border border-white/5 shadow-2xl">
+            <div class="absolute -top-12 -left-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none">
+            </div>
+            <div
+              class="absolute -bottom-16 -right-16 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none">
+            </div>
+
+            <div class="relative flex items-center gap-5">
+              <!-- Avatar -->
+              <div class="relative flex-shrink-0">
+                <div
+                  class="w-[68px] h-[68px] rounded-full p-[2px] bg-gradient-to-tr from-indigo-500 via-purple-500 to-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.25)]">
+                  <div class="w-full h-full rounded-full bg-[#0c0c10] flex items-center justify-center">
+                    <span id="profileLetter" class="text-2xl font-black text-white/90 font-orbitron">G</span>
+                  </div>
+                </div>
+                <div
+                  class="absolute bottom-0.5 right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-[3px] border-[#0c0c10] glow-dot">
+                </div>
+              </div>
+
+              <!-- Profile Details -->
+              <div class="min-w-0 flex-1">
+                <span class="text-[8px] tracking-[0.2em] font-semibold text-zinc-500 block mb-0.5 uppercase">USER
+                  INFORMATION</span>
+                <h2
+                  class="text-lg font-black tracking-[0.12em] text-white truncate uppercase font-orbitron flex items-center gap-1.5">
+                  <span id="profileUsername" class="truncate">GUEST</span>
+                  <!-- Verified Badge -->
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                    class="flex-shrink-0 drop-shadow-[0_0_6px_rgba(0,149,246,0.65)]">
+                    <path
+                      d="M22.25 12c0-1.43-.88-2.67-2.15-3.26.15-.39.24-.82.24-1.27 0-2-1.61-3.64-3.6-3.64-.45 0-.87.09-1.27.24C14.88 2.8 13.56 2 12 2s-2.88.8-3.47 2.07c-.4-.15-.82-.24-1.27-.24-1.99 0-3.6 1.64-3.6 3.64 0 .45.09.88.24 1.27-1.27.59-2.15 1.83-2.15 3.26 0 1.43.88 2.67 2.15 3.26-.15.39-.24.82-.24 1.27 0 2 1.61 3.64 3.6 3.64.45 0 .87-.09 1.27-.24.59 1.27 1.91 2.07 3.47 2.07s2.88-.8 3.47-2.07c.4.15.82.24 1.27.24 1.99 0 3.6-1.64 3.6-3.64 0-.45-.09-.88-.24-1.27 1.27-.59 2.15-1.83 2.15-3.26z"
+                      fill="#0095f6" />
+                    <path d="M7.5 12.5L10 15L16.5 8.5" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"
+                      stroke-linejoin="round" fill="none" />
+                  </svg>
+                </h2>
+
+                <div class="flex items-center gap-3 mt-2 flex-wrap">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span id="profileRole"
+                      class="text-[9px] tracking-wider text-indigo-300 font-bold uppercase font-orbitron">USER</span>
+                  </div>
+                  <div class="h-3 w-[1px] bg-zinc-800"></div>
+                  <div class="flex items-center gap-1.5 text-zinc-500">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span id="profileExpiry"
+                      class="text-[9px] tracking-widest font-semibold font-mono text-zinc-400 uppercase">EXP
+                      2026-12-31</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-2 gap-4 anim-slide-up anim-stagger-2">
+            <!-- Stat 1: Online Senders -->
+            <div class="glass p-5 relative overflow-hidden group cursor-default">
+              <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500 to-emerald-400"></div>
+              <div class="flex justify-between items-start mb-4">
+                <span class="label">ONLINE</span>
+                <div id="onlineStatusPulse" class="w-2 h-2 rounded-full bg-emerald-400 glow-dot hidden"></div>
+              </div>
+              <div
+                class="w-12 h-12 rounded-xl border border-emerald-500/20 text-emerald-400 bg-emerald-500/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                <span id="onlineSendersCount" class="text-lg font-bold">0</span>
+              </div>
+            </div>
+
+            <!-- Stat 2: Total Senders -->
+            <div class="glass p-4 relative overflow-hidden group cursor-default">
+              <div id="totalSendersBar"
+                class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-zinc-600 to-zinc-500"></div>
+              <div class="flex justify-between items-start mb-3">
+                <span class="label">WA SENDER</span>
+                <div id="totalSendersPulse" class="w-2 h-2 rounded-full bg-emerald-400 glow-dot hidden"></div>
+              </div>
+              <div id="totalSendersIconBg"
+                class="w-10 h-10 rounded-xl border border-zinc-600/30 text-zinc-500 bg-zinc-800/50 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                <span id="totalSendersCount" class="text-lg font-bold font-orbitron text-white">0</span>
+              </div>
+              <p id="totalSendersLabel" class="text-[9px] mt-3 tracking-widest font-semibold text-zinc-500">NO SENDERS
+              </p>
+            </div>
+          </div>
+
+          <!-- WA Senders Manager -->
+          <section
+            class="glass p-5 space-y-4 anim-slide-up anim-stagger-3 border border-white/5 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="text-indigo-400">
+                    <path
+                      d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                    <path
+                      d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.327 0-4.47-.781-6.191-2.093l-.367-.291-2.694.903.903-2.694-.291-.367A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-xs font-bold tracking-[0.2em] text-white uppercase font-orbitron">WA Senders</h3>
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-500 font-semibold uppercase">Manage Connections</p>
+                </div>
+              </div>
+              <button id="addSenderButton"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-500/30 text-indigo-300 bg-indigo-500/10 text-[9px] tracking-[0.15em] font-bold transition-all hover:bg-indigo-500/20 active:scale-95">
+                <span>+ ADD SENDER</span>
+              </button>
+            </div>
+
+            <!-- Senders list dynamic wrapper -->
+            <div id="sendersListWrapper" class="space-y-2">
+              <!-- Rendered via JS -->
+            </div>
+          </section>
+
+          <!-- Premium credit card with JJK GIF -->
+          <div
+            class="glass p-0 overflow-hidden anim-slide-up anim-stagger-4 group cursor-pointer relative h-[140px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+            <img src="https://media1.tenor.com/m/sxpgGK7u-T4AAAAd/higuruma-hiromi.gif" alt="JJK Higuruma"
+              class="absolute inset-0 w-full h-full object-cover object-top opacity-50 group-hover:scale-105 transition-transform duration-700 ease-out pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/20 to-transparent"></div>
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div
+              class="absolute inset-0 border border-white/5 rounded-2xl group-hover:border-indigo-500/30 transition-colors duration-500">
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center p-5 z-10">
+              <h3
+                class="text-xl font-black tracking-[0.25em] text-shimmer drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] font-orbitron uppercase text-center">
+                BARZX PREDATOR</h3>
+            </div>
+          </div>
+
+          <!-- Notice -->
+          <div class="glass-subtle p-4 border-l-2 border-l-amber-500/40 anim-slide-up anim-stagger-4">
+            <div class="flex gap-3">
+              <div class="flex-shrink-0 mt-0.5">
+                <div class="w-6 h-6 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                  <span class="text-xs">⚠️</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-500 leading-relaxed tracking-wide">
+                <span class="text-zinc-300 font-semibold">NOTICE</span> — Account provisioning requires Owner/Reseller
+                authorization via secure Telegram gateway.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ EXECUTION TAB ═══ -->
+        <div id="tab-execution" class="tab-pane space-y-5 hidden">
+          <div class="glass p-6 anim-slide-up anim-stagger-1 relative overflow-visible">
+            <div class="absolute -top-20 -left-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative">
+              <div class="flex items-center gap-3 mb-6">
+                <div
+                  class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center glow-indigo">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold tracking-[0.2em] text-zinc-200">INITIALIZE TARGET</h2>
+                  <p class="text-[9px] text-zinc-600 tracking-[0.15em] mt-0.5">SECURE PAYLOAD GATEWAY</p>
+                </div>
+              </div>
+
+              <!-- Exec form -->
+              <form id="execForm" class="space-y-5">
+                <div class="space-y-2.5">
+                  <label class="label">TARGET IDENTIFIER</label>
+                  <input id="targetPhoneInput" type="text" class="input-glass" placeholder="Enter phone number..."
+                    required>
+                </div>
+
+                <div class="space-y-2.5">
+                  <label class="label">PAYLOAD</label>
+                  <div class="relative">
+                    <!-- Dropdown Trigger -->
+                    <button id="protocolDropdownTrigger" type="button"
+                      class="input-glass w-full text-left flex items-center justify-between pr-10 cursor-pointer relative">
+                      <span id="selectedProtocolText" class="text-zinc-200 text-xs font-bold font-mono">TES PLAIN
+                        TEXT</span>
+                      <div class="absolute right-4 top-1/2 -translate-y-1/2 transition-transform duration-300"
+                        id="dropdownArrow">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="protocolDropdownMenu"
+                      class="absolute top-[calc(100%+8px)] left-0 w-full bg-[#050507] border border-zinc-700/80 rounded-2xl p-2.5 z-50 space-y-1 shadow-[0_12px_45px_rgba(0,0,0,0.95)] max-h-[170px] overflow-y-auto hidden pr-1.5 scrollbar-thin scrollbar-thumb-zinc-800 anim-slide-up">
+                      <button type="button" data-protocol="A"
+                        class="protocol-option w-full text-left p-3 rounded-xl transition-all duration-200 flex flex-col gap-0.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
+                        <span class="text-[10px] tracking-widest font-bold font-orbitron">TES PLAIN TEXT</span>
+                        <span class="text-[9px] text-zinc-500 leading-tight">Standard text notification</span>
+                      </button>
+                      <button type="button" data-protocol="B"
+                        class="protocol-option w-full text-left p-3 rounded-xl transition-all duration-200 flex flex-col gap-0.5 border border-transparent hover:bg-white/5 text-zinc-400 hover:text-zinc-200">
+                        <span class="text-[10px] tracking-widest font-bold font-orbitron">TES ADS MESSAGE</span>
+                        <span class="text-[9px] text-zinc-500 leading-tight">Interactive banner layout</span>
+                      </button>
+                      <button type="button" data-protocol="C"
+                        class="protocol-option w-full text-left p-3 rounded-xl transition-all duration-200 flex flex-col gap-0.5 border border-transparent hover:bg-white/5 text-zinc-400 hover:text-zinc-200">
+                        <span class="text-[10px] tracking-widest font-bold font-orbitron">BUG EVENT</span>
+                        <span class="text-[9px] text-zinc-500 leading-tight">Calendar invitation view</span>
+                      </button>
+                      <button type="button" data-protocol="D"
+                        class="protocol-option w-full text-left p-3 rounded-xl transition-all duration-200 flex flex-col gap-0.5 border border-transparent hover:bg-white/5 text-zinc-400 hover:text-zinc-200">
+                        <span class="text-[10px] tracking-widest font-bold font-orbitron">BUG BUFFER IMAGE</span>
+                        <span class="text-[9px] text-zinc-500 leading-tight">Image buffer rendering</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-3">
+                  <p id="offlineWarningText"
+                    class="text-[10px] text-red-400 font-bold text-center uppercase tracking-wide mb-2 hidden">
+                    ⚠️ API Server is Offline. Start the bot first!
+                  </p>
+                  <button id="executeButton" type="submit"
+                    class="btn-primary w-full flex items-center justify-center gap-3">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" class="relative z-10">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span class="relative z-10">EXECUTE</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ TOOLS TAB ═══ -->
+        <div id="tab-tools" class="tab-pane space-y-5 hidden">
+
+          <!-- Sub-menu Navigation -->
+          <div id="toolsSubMenu" class="space-y-4 anim-slide-up">
+            <div class="glass p-5 relative overflow-hidden">
+              <div
+                class="absolute -top-20 -left-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+              </div>
+
+              <div class="flex items-center gap-3 mb-6">
+                <div
+                  class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center glow-indigo">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold tracking-[0.2em] text-zinc-200">SYSTEM TOOLS</h2>
+                  <p class="text-[9px] text-zinc-600 tracking-[0.15em] mt-0.5">UTILITIES & SERVICES</p>
+                </div>
+              </div>
+
+              <!-- Navigation Menu Cards -->
+              <div class="space-y-3">
+                <!-- Pterodactyl Installation Card Link -->
+                <button id="menuLinkPtero" type="button"
+                  class="w-full text-left p-4 rounded-xl border border-white/5 bg-zinc-950/45 hover:bg-indigo-500/5 hover:border-indigo-500/20 transition-all flex items-center justify-between group active:scale-[0.99]">
+                  <div class="flex items-center gap-3.5 min-w-0">
+                    <div
+                      class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-all">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="8" rx="1.5"></rect>
+                        <rect x="2" y="14" width="20" height="8" rx="1.5"></rect>
+                        <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                        <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                      </svg>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-bold text-zinc-200 tracking-wider">Panel Pterodactyl Installation</p>
+                      <p class="text-[9px] text-zinc-500 tracking-wide mt-0.5 font-semibold uppercase">Install via
+                        Direct SSH Connection</p>
+                    </div>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    class="text-zinc-600 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+
+                <!-- Global Chat Card Link -->
+                <button id="menuLinkChat" type="button"
+                  class="w-full text-left p-4 rounded-xl border border-white/5 bg-zinc-950/45 hover:bg-indigo-500/5 hover:border-indigo-500/20 transition-all flex items-center justify-between group active:scale-[0.99]">
+                  <div class="flex items-center gap-3.5 min-w-0">
+                    <div
+                      class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-all">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-bold text-zinc-200 tracking-wider">Global Operator Chat</p>
+                      <p class="text-[9px] text-zinc-500 tracking-wide mt-0.5 font-semibold uppercase">Live
+                        communication room</p>
+                    </div>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    class="text-zinc-600 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Database backup stats -->
+            <div class="glass-subtle p-4 border border-white/5 space-y-3">
+              <div>
+                <span class="text-[10px] tracking-widest font-bold font-orbitron text-zinc-200">NODE STATUS</span>
+                <p class="text-[9px] text-zinc-500 leading-tight mt-0.5">System status & active processes</p>
+              </div>
+              <div
+                class="p-3 rounded-lg bg-zinc-950/45 border border-zinc-800/80 font-mono text-[10px] text-zinc-400 space-y-1">
+                <p>Auto-reconnect process: <span class="text-emerald-400">ENABLED</span></p>
+                <p>Telegram polling status: <span class="text-amber-400">WAITING CONFIG</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pterodactyl Installer Panel (Hidden by default) -->
+          <div id="toolsInstallerPanel" class="space-y-4 hidden anim-slide-up">
+            <!-- Back Button -->
+            <button id="btnBackFromInstaller" type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:text-zinc-200 text-[10px] font-bold tracking-wider active:scale-95 transition-all">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              BACK TO TOOLS
+            </button>
+
+            <!-- SSH VPS Installer Form -->
+            <div class="glass p-5 relative overflow-hidden">
+              <div
+                class="absolute -top-20 -left-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+              </div>
+
+              <div class="flex items-center gap-3 mb-6">
+                <div
+                  class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="8" rx="1.5"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="1.5"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-xs font-bold tracking-[0.2em] text-white uppercase font-orbitron">DIRECT SSH INSTALLER
+                  </h3>
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-500 font-semibold uppercase">Install directly on
+                    client VPS</p>
+                </div>
+              </div>
+
+              <form id="sshInstallForm" class="space-y-4">
+                <div class="grid grid-cols-3 gap-2.5">
+                  <div class="col-span-2 space-y-1.5">
+                    <label class="label">VPS IP ADDRESS</label>
+                    <input id="sshIp" type="text" class="input-glass text-xs py-2 px-3" placeholder="192.168.1.10"
+                      required>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="label">PORT</label>
+                    <input id="sshPort" type="number" class="input-glass text-xs py-2 px-3" placeholder="22" value="22"
+                      required>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div class="space-y-1.5">
+                    <label class="label">SSH USERNAME</label>
+                    <input id="sshUsername" type="text" class="input-glass text-xs py-2 px-3" placeholder="root"
+                      value="root" required>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="label">SSH PASSWORD</label>
+                    <input id="sshPassword" type="password" class="input-glass text-xs py-2 px-3"
+                      placeholder="VPS password..." required>
+                  </div>
+                </div>
+
+                <div class="space-y-1.5">
+                  <label class="label">SELECT SCRIPT</label>
+                  <select id="sshScriptSelect"
+                    class="input-glass text-xs py-2.5 px-3 w-full bg-[#050508] border-zinc-800 text-zinc-200 focus:border-indigo-500/50 cursor-pointer">
+                    <option value="ptero-panel">Install Panel Pterodactyl</option>
+                    <option value="ptero-theme">Install Panel Theme</option>
+                    <option value="custom">Custom Bash Command</option>
+                  </select>
+                </div>
+
+                <div id="sshCustomCommandWrapper" class="space-y-1.5 hidden">
+                  <label class="label">CUSTOM BASH COMMAND</label>
+                  <input id="sshCustomCommand" type="text" class="input-glass text-xs py-2 px-3"
+                    placeholder="e.g. apt update && apt install curl -y">
+                </div>
+
+                <button id="btnExecuteSsh" type="submit"
+                  class="btn-primary w-full py-3 flex items-center justify-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" class="relative z-10">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  <span class="relative z-10 tracking-[0.15em] text-[10px] font-bold">START DIRECT INSTALLATION</span>
+                </button>
+              </form>
+
+              <!-- Console Stream Container -->
+              <div id="sshConsoleWrapper" class="space-y-2 mt-4 hidden">
+                <div class="flex justify-between items-center">
+                  <span class="text-[9px] tracking-widest font-bold font-orbitron text-zinc-500">REALTIME SSH
+                    OUTPUT</span>
+                  <button id="btnClearConsole" type="button"
+                    class="text-[9px] font-bold text-red-400 hover:text-red-300 tracking-wider transition-colors">CLEAR</button>
+                </div>
+                <div id="sshConsole"
+                  class="h-48 overflow-y-auto p-4 rounded-xl bg-black/95 border border-zinc-800/80 font-mono text-[10px] text-emerald-400 space-y-1 scrollbar-thin scrollbar-thumb-zinc-800 leading-relaxed select-text">
+                  <div>Console ready. Awaiting trigger...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Global Chat Panel (Hidden by default) -->
+          <div id="toolsChatPanel" class="space-y-4 hidden anim-slide-up">
+            <!-- Back Button -->
+            <button id="btnBackFromChat" type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:text-zinc-200 text-[10px] font-bold tracking-wider active:scale-95 transition-all">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              BACK TO TOOLS
+            </button>
+
+            <!-- Global Chat Box -->
+            <div class="glass p-5 relative overflow-hidden flex flex-col h-[480px]">
+              <div
+                class="absolute -top-20 -right-20 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none">
+              </div>
+
+              <div class="flex items-center justify-between pb-3.5 border-b border-zinc-800/85 mb-4 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-xs font-bold tracking-[0.2em] text-white uppercase font-orbitron">GLOBAL CHAT ROOM
+                    </h3>
+                    <p class="text-[8px] tracking-[0.15em] text-zinc-500 font-semibold uppercase">Realtime Operator
+                      Connect</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message Stream Box -->
+              <div id="chatMessagesBox"
+                class="flex-1 overflow-y-auto pr-1 space-y-3.5 scrollbar-thin scrollbar-thumb-zinc-800 pb-2">
+                <!-- Rendered dynamically -->
+                <div class="text-center text-[10px] text-zinc-600 tracking-wider py-8 uppercase font-bold">LOADING CHAT
+                  LOGS...</div>
+              </div>
+
+              <!-- Chat Form Input -->
+              <form id="chatInputForm" class="mt-4 flex gap-2 flex-shrink-0">
+                <input id="chatInputText" type="text"
+                  class="input-glass flex-1 text-xs py-2.5 px-3.5 focus:border-indigo-500/50"
+                  placeholder="Type your message..." maxlength="250" required>
+                <button id="btnSendChat" type="submit"
+                  class="btn-primary px-4 py-2.5 flex items-center justify-center active:scale-95 transition-all">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" class="relative z-10">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ HISTORY (LOGS) TAB ═══ -->
+        <div id="tab-history" class="tab-pane space-y-5 hidden">
+          <div class="glass p-5 anim-slide-up anim-stagger-1">
+            <div class="flex items-center justify-between mb-5">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-xl bg-zinc-800 border border-zinc-700/50 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-sm font-bold tracking-[0.2em] text-zinc-200">EXEC LOGS</h2>
+                  <p id="logsCountText" class="text-[9px] text-zinc-600 tracking-[0.15em] mt-0.5">0 RECORDS</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Logs list wrapper -->
+            <div id="logsWrapper" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ PROFILE TAB ═══ -->
+        <div id="tab-profile" class="tab-pane space-y-5 hidden">
+
+          <!-- Identity card -->
+          <section
+            class="glass rounded-[28px] p-6 relative overflow-hidden anim-slide-up anim-stagger-1 border border-white/5 shadow-2xl">
+            <div class="absolute -top-16 -left-16 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div
+              class="absolute -bottom-20 -right-20 w-48 h-48 bg-purple-500/8 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div class="relative flex flex-col items-center text-center">
+              <div class="relative mb-5">
+                <div
+                  class="w-[88px] h-[88px] rounded-full p-[2.5px] bg-gradient-to-tr from-zinc-600 via-zinc-500 to-zinc-600 shadow-[0_0_25px_rgba(161,161,170,0.15)]">
+                  <div class="w-full h-full rounded-full bg-[#0c0c10] flex items-center justify-center">
+                    <span id="profileLetterBig" class="text-3xl font-black text-white/90 font-orbitron">G</span>
+                  </div>
+                </div>
+                <div
+                  class="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 rounded-full border-[3px] border-[#0c0c10] glow-dot">
+                </div>
+              </div>
+
+              <h2
+                class="text-xl font-black tracking-[0.15em] text-white uppercase font-orbitron flex items-center gap-1.5">
+                <span id="profileUsernameBig">GUEST</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  class="flex-shrink-0 drop-shadow-[0_0_6px_rgba(0,149,246,0.65)]">
+                  <path
+                    d="M22.25 12c0-1.43-.88-2.67-2.15-3.26.15-.39.24-.82.24-1.27 0-2-1.61-3.64-3.6-3.64-.45 0-.87.09-1.27.24C14.88 2.8 13.56 2 12 2s-2.88.8-3.47 2.07c-.4-.15-.82-.24-1.27-.24-1.99 0-3.6 1.64-3.6 3.64 0 .45.09.88.24 1.27-1.27.59-2.15 1.83-2.15 3.26 0 1.43.88 2.67 2.15 3.26-.15.39-.24.82-.24 1.27 0 2 1.61 3.64 3.6 3.64.45 0 .87-.09 1.27-.24.59 1.27 1.91 2.07 3.47 2.07s2.88-.8 3.47-2.07c.4.15.82.24 1.27.24 1.99 0 3.6-1.64 3.6-3.64 0-.45-.09-.88-.24-1.27 1.27-.59 2.15-1.83 2.15-3.26z"
+                    fill="#0095f6" />
+                  <path d="M7.5 12.5L10 15L16.5 8.5" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"
+                    stroke-linejoin="round" fill="none" />
+                </svg>
+              </h2>
+              <p class="text-[8px] tracking-[0.2em] text-zinc-500 font-bold mt-1.5 uppercase">Authenticated Operator
+                Node</p>
+
+              <div class="flex items-center gap-2 mt-4">
+                <div
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400">
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z">
+                    </polygon>
+                  </svg>
+                  <span id="profileRoleBig" class="text-[9px] tracking-[0.15em] font-bold text-indigo-300">USER</span>
+                </div>
+                <div
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 glow-dot"></span>
+                  <span class="text-[9px] tracking-[0.15em] font-bold text-emerald-300">ACTIVE</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Account details info blocks -->
+          <div class="glass p-5 anim-slide-up anim-stagger-2 space-y-0 divide-y divide-zinc-800/50"
+            id="profileDetailsList">
+            <!-- Rendered dynamically via JS -->
+          </div>
+
+          <!-- System Info -->
+          <div class="glass p-5 anim-slide-up anim-stagger-3 relative overflow-hidden">
+            <div class="absolute -top-16 -right-16 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none">
+            </div>
+            <div class="relative">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400">
+                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-[10px] font-bold tracking-[0.2em] text-zinc-300 uppercase">System Info</h3>
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-600 font-semibold">Runtime Environment</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="glass-subtle p-3 rounded-xl">
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-600 font-bold">VERSION</p>
+                  <p class="text-[11px] font-bold text-zinc-300 tracking-wider mt-0.5">v1.0</p>
+                </div>
+                <div class="glass-subtle p-3 rounded-xl">
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-600 font-bold">ENGINE</p>
+                  <p class="text-[11px] font-bold text-zinc-300 tracking-wider mt-0.5">Baileys</p>
+                </div>
+                <div class="glass-subtle p-3 rounded-xl">
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-600 font-bold">FRAMEWORK</p>
+                  <p class="text-[11px] font-bold text-zinc-300 tracking-wider mt-0.5">Node.js</p>
+                </div>
+                <div class="glass-subtle p-3 rounded-xl">
+                  <p class="text-[8px] tracking-[0.15em] text-zinc-600 font-bold">PROTOCOL</p>
+                  <p class="text-[11px] font-bold text-zinc-300 tracking-wider mt-0.5">Multi-Device</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Developer Info Card -->
+          <div class="glass p-5 text-center anim-slide-up anim-stagger-4 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-indigo-500/3 to-transparent pointer-events-none"></div>
+            <div class="relative">
+              <div
+                class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <p class="text-[8px] tracking-[0.2em] text-zinc-500 font-bold uppercase mb-1">Credits</p>
+              <p id="developerCredits" class="text-sm font-semibold tracking-wide text-zinc-300 mt-2 leading-relaxed">
+                VANNESS WANGSAFF</p>
+              <div class="flex justify-center gap-2.5 mt-5">
+                <a href="https://whatsapp.com/channel/0029Vak1Mh81noz57tVkqv2y" target="_blank" rel="noreferrer"
+                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] tracking-[0.12em] font-bold hover:bg-emerald-500/15 hover:border-emerald-500/30 active:scale-95 transition-all">
+                  WA CHANNEL
+                </a>
+                <a href="https://t.me/VannessWangsaff" target="_blank" rel="noreferrer"
+                  class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] tracking-[0.12em] font-bold hover:bg-indigo-500/15 hover:border-indigo-500/30 active:scale-95 transition-all">
+                  TELEGRAM
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- ── BOTTOM NAVIGATION ── -->
+      <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 px-4 pb-4 pt-2">
+        <div
+          class="glass bg-black/70 backdrop-blur-2xl rounded-2xl flex justify-around items-center p-1.5 border-zinc-800/80 shadow-[0_-8px_40px_rgba(0,0,0,0.6)]">
+
+          <button data-tab="dashboard"
+            class="nav-tab-button relative flex flex-col items-center gap-1 w-[72px] py-2.5 rounded-xl transition-all duration-300 text-white">
+            <div
+              class="active-indicator absolute top-0 w-6 h-[3px] rounded-b-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.6)] opacity-100 transition-all duration-300">
+            </div>
+            <div class="active-bg absolute inset-0 rounded-xl bg-indigo-500/5 transition-all"></div>
+            <div class="relative mt-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+              </svg>
+            </div>
+            <span class="text-[9px] tracking-[0.12em] font-bold text-indigo-300">HOME</span>
+          </button>
+
+          <button data-tab="execution"
+            class="nav-tab-button relative flex flex-col items-center gap-1 w-[72px] py-2.5 rounded-xl transition-all duration-300 text-zinc-600 hover:text-zinc-400 active:scale-95">
+            <div
+              class="active-indicator absolute top-0 w-6 h-[3px] rounded-b-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.6)] opacity-0 transition-all duration-300">
+            </div>
+            <div class="active-bg absolute inset-0 rounded-xl bg-indigo-500/5 opacity-0 transition-all"></div>
+            <div class="relative mt-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <span class="text-[9px] tracking-[0.12em] font-bold">EXECUTE</span>
+          </button>
+
+          <button data-tab="tools"
+            class="nav-tab-button relative flex flex-col items-center gap-1 w-[72px] py-2.5 rounded-xl transition-all duration-300 text-zinc-600 hover:text-zinc-400 active:scale-95">
+            <div
+              class="active-indicator absolute top-0 w-6 h-[3px] rounded-b-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.6)] opacity-0 transition-all duration-300">
+            </div>
+            <div class="active-bg absolute inset-0 rounded-xl bg-indigo-500/5 opacity-0 transition-all"></div>
+            <div class="relative mt-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+              </svg>
+            </div>
+            <span class="text-[9px] tracking-[0.12em] font-bold">TOOLS</span>
+          </button>
+
+          <button data-tab="history"
+            class="nav-tab-button relative flex flex-col items-center gap-1 w-[72px] py-2.5 rounded-xl transition-all duration-300 text-zinc-600 hover:text-zinc-400 active:scale-95">
+            <div
+              class="active-indicator absolute top-0 w-6 h-[3px] rounded-b-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.6)] opacity-0 transition-all duration-300">
+            </div>
+            <div class="active-bg absolute inset-0 rounded-xl bg-indigo-500/5 opacity-0 transition-all"></div>
+            <div class="relative mt-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <span class="text-[9px] tracking-[0.12em] font-bold">LOGS</span>
+          </button>
+
+          <button data-tab="profile"
+            class="nav-tab-button relative flex flex-col items-center gap-1 w-[72px] py-2.5 rounded-xl transition-all duration-300 text-zinc-600 hover:text-zinc-400 active:scale-95">
+            <div
+              class="active-indicator absolute top-0 w-6 h-[3px] rounded-b-full bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.6)] opacity-0 transition-all duration-300">
+            </div>
+            <div class="active-bg absolute inset-0 rounded-xl bg-indigo-500/5 opacity-0 transition-all"></div>
+            <div class="relative mt-1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <span class="text-[9px] tracking-[0.12em] font-bold">PROFILE</span>
+          </button>
+
+        </div>
+      </nav>
+
+    </div>
+  </div>
+
+  <!-- ── TOAST CONTAINER ── -->
+  <div id="toastContainer" class="fixed top-8 left-1/2 -translate-x-1/2 z-50 hidden anim-slide-up">
+    <!-- Rendered via JS dynamically -->
+  </div>
+
+  <!-- ── WHATSAPP PAIRING MODAL ── -->
+  <div id="pairingModal" class="fixed inset-0 z-[60] flex items-end justify-center hidden">
+    <!-- Backdrop -->
+    <div id="pairingModalBackdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+    <!-- Modal Sheet -->
+    <div
+      class="relative w-full max-w-[430px] bg-[#0c0c10] border-t border-x border-zinc-800 rounded-t-3xl p-6 pb-10 anim-slide-up z-10">
+      <!-- Handle bar -->
+      <div class="w-10 h-1 bg-zinc-700 rounded-full mx-auto mb-6"></div>
+
+      <!-- Step: Phone input -->
+      <div id="pairingStepPhone" class="space-y-6">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" class="text-emerald-400">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+              <path
+                d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.327 0-4.47-.781-6.191-2.093l-.367-.291-2.694.903.903-2.694-.291-.367A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold tracking-[0.15em] text-white">LINK WHATSAPP</h3>
+          <p class="text-[11px] text-zinc-500 tracking-wide mt-1">Enter your WhatsApp number to generate a pairing code
+          </p>
+        </div>
+
+        <form id="pairingPhoneForm" class="space-y-4">
+          <div class="space-y-2">
+            <label class="label">PHONE NUMBER</label>
+            <input id="pairingPhoneInput" type="tel" class="input-glass text-center text-lg tracking-[0.3em]"
+              placeholder="08XXXXXXXXXX" required>
+          </div>
+          <p id="pairingOfflineText"
+            class="text-[10px] text-red-400 font-bold text-center uppercase tracking-wide hidden">
+            ⚠️ API Server is Offline. Start the bot first!
+          </p>
+          <button type="submit" class="btn-primary w-full">GENERATE PAIRING CODE</button>
+        </form>
+      </div>
+
+      <!-- Step: Code Display -->
+      <div id="pairingStepCode" class="space-y-6 hidden">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold tracking-[0.15em] text-white">PAIRING CODE</h3>
+          <p class="text-[11px] text-zinc-500 tracking-wide mt-1">Enter this code on your WhatsApp app</p>
+        </div>
+
+        <div class="glass p-6 text-center glow-indigo">
+          <p id="pairingCodeDisplay" class="text-3xl font-bold tracking-[0.5em] text-white font-mono">XXXX-XXXX</p>
+        </div>
+
+        <div class="glass-subtle p-3 flex items-center justify-between">
+          <span class="label">TARGET</span>
+          <span id="pairingTargetDisplay" class="text-sm text-zinc-300 tracking-wider font-mono">08XXXXXXXXXX</span>
+        </div>
+
+        <div class="p-4 rounded-xl bg-zinc-950/45 border border-zinc-800/80 space-y-2 text-left">
+          <p class="text-[9px] text-zinc-500 tracking-wider font-bold uppercase">HOW TO LINK</p>
+          <ol class="text-[10px] text-zinc-400 leading-relaxed font-sans list-decimal pl-4 space-y-1">
+            <li>Buka aplikasi <span class="text-emerald-400 font-semibold">WhatsApp</span> di HP Anda.</li>
+            <li>Ketuk ikon <span class="text-zinc-300 font-semibold">Menu</span> (Titik Tiga / Pengaturan) &gt; <span
+                class="text-zinc-300 font-semibold">Perangkat Tertaut</span>.</li>
+            <li>Pilih <span class="text-indigo-400 font-semibold">Tautkan Perangkat</span> &gt; lalu ketuk <span
+                class="text-indigo-400 font-semibold">Tautkan dengan nomor telepon saja</span>.</li>
+            <li>Masukkan 8 karakter kode pairing di atas.</li>
+          </ol>
+        </div>
+
+        <div class="text-center">
+          <p class="text-[11px] text-zinc-500 tracking-wide">
+            Code expires in <span id="countdownTimer" class="font-bold text-indigo-300">2:00</span>
+          </p>
+        </div>
+
+        <div class="flex gap-3">
+          <button id="pairingBackButton" class="btn-ghost flex-1">BACK</button>
+          <button id="pairingConfirmButton" class="btn-primary flex-1">CONFIRM LINKED</button>
+        </div>
+      </div>
+
+      <!-- Step: Success -->
+      <div id="pairingStepSuccess" class="text-center py-6 space-y-4 hidden">
+        <div
+          class="w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto glow-green">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold tracking-[0.15em] text-emerald-300">LINKED SUCCESSFULLY</h3>
+        <p class="text-[11px] text-zinc-500 tracking-wide">WhatsApp sender is now connected</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SIDEBAR DRAWER ── -->
+  <div id="sidebarDrawer" class="fixed inset-0 z-[60] flex hidden">
+    <!-- Backdrop -->
+    <div id="sidebarBackdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm anim-fade-in"></div>
+
+    <!-- Content -->
+    <div
+      class="relative w-[280px] max-w-[80vw] h-full bg-[#0c0c10] border-r border-zinc-800/80 p-6 flex flex-col justify-between anim-slide-right shadow-[10px_0_40px_rgba(0,0,0,0.6)] z-10">
+      <div class="space-y-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-md font-bold tracking-[0.2em] text-white">COMMUNITY</h2>
+            <p class="text-[8px] tracking-[0.15em] text-zinc-500 font-semibold mt-0.5">JOIN OUR GROUPS</p>
+          </div>
+          <button id="closeSidebarButton"
+            class="w-8 h-8 rounded-xl glass flex items-center justify-center hover:bg-white/5 active:scale-95 transition-all cursor-pointer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <p class="text-[11px] text-zinc-400 leading-relaxed font-sans">
+          Join our social channels to get update news, tools, support, and connect with developers.
+        </p>
+
+        <!-- Links -->
+        <div class="space-y-3 pt-2">
+
+          <!-- Admin Panel Button (shown dynamically for Owner/Reseller) -->
+          <div id="adminPanelLinkWrapper"></div>
+
+          <a href="https://whatsapp.com/channel/0029Vak1Mh81noz57tVkqv2y" target="_blank" rel="noreferrer"
+            class="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/15 hover:border-emerald-500/30 transition-all group">
+            <div
+              class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.327 0-4.47-.781-6.191-2.093l-.367-.291-2.694.903.903-2.694-.291-.367A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0 text-left">
+              <p class="text-[10px] font-bold tracking-[0.15em] text-emerald-300">SALURAN WHATSAPP</p>
+              <p class="text-[8px] tracking-[0.1em] text-zinc-500 font-semibold mt-0.5 uppercase">JOIN CHANNEL</p>
+            </div>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              class="text-emerald-400/60 group-hover:translate-x-0.5 transition-transform">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+
+          <a href="https://t.me/VannessWangsaff" target="_blank" rel="noreferrer"
+            class="flex items-center gap-3 p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/15 hover:border-indigo-500/30 transition-all group">
+            <div
+              class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.492-1.302.48-.428-.013-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0 text-left">
+              <p class="text-[10px] font-bold tracking-[0.15em] text-indigo-300">DEVELOPER BASE</p>
+              <p class="text-[8px] tracking-[0.1em] text-zinc-500 font-semibold mt-0.5 uppercase">TELEGRAM GROUP</p>
+            </div>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              class="text-indigo-400/60 group-hover:translate-x-0.5 transition-transform">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Logout -->
+      <div class="pt-2">
+        <button id="logoutButton"
+          class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/15 hover:border-red-500/30 transition-all text-[10px] tracking-[0.2em] font-bold cursor-pointer">
+          LOGOUT
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-zinc-800/80 pt-4 text-center">
+        <p class="text-[8px] tracking-[0.2em] text-zinc-600 font-bold uppercase">BARZX PREDATOR</p>
+        <p class="text-[7px] tracking-[0.15em] text-zinc-700 font-medium mt-1">POWERED BY BARR.DEV.PROJECT</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[Service Worker] Registered', reg.scope))
+          .catch(err => console.error('[Service Worker] Registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

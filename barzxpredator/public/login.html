@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BARZX PREDATOR LOGIN</title>
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#050508',
+            foreground: '#e4e4e7',
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Standalone custom glass styles and animations -->
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="theme-color" content="#050508">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/img/icon-192.png">
+</head>
+<body class="min-h-full flex flex-col justify-center bg-background text-foreground">
+  <!-- Animated background mesh -->
+  <div class="bg-mesh"></div>
+
+  <div class="relative z-10 w-full max-w-[430px] mx-auto min-h-[100vh] flex flex-col justify-center px-6">
+    <div class="glass p-8 text-center anim-slide-up relative overflow-hidden">
+      <!-- Glow accent light -->
+      <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-60 h-60 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative space-y-6">
+        <!-- Logo -->
+        <div class="relative w-24 h-24 rounded-full p-[2px] bg-zinc-800 border border-zinc-700/50 shadow-[0_0_20px_rgba(255,255,255,0.05)] mx-auto overflow-hidden">
+          <div class="w-full h-full rounded-full bg-[#0c0c10] overflow-hidden flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" class="w-full h-full object-cover">
+          </div>
+        </div>
+
+        <div>
+          <h1 class="text-xl font-bold tracking-[0.25em] text-white font-orbitron">BARZX PREDATOR</h1>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-4 pt-2">
+          <div class="space-y-2 text-left">
+            <label class="label">USERNAME</label>
+            <input
+              id="usernameInput"
+              type="text"
+              class="input-glass text-left text-md tracking-[0.1em] placeholder:tracking-[0.1em]"
+              placeholder="YOUR USERNAME"
+              required
+            >
+          </div>
+
+          <div class="space-y-2 text-left">
+            <label class="label">PASSWORD</label>
+            <input
+              id="passwordInput"
+              type="password"
+              class="input-glass text-left text-md tracking-[0.1em]"
+              placeholder="YOUR PASSWORD"
+              required
+            >
+          </div>
+
+          <!-- Error Message Container -->
+          <div id="errorContainer" class="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-center glow-red hidden">
+            <p id="errorMessage" class="text-[10px] text-red-400 font-extrabold tracking-wider uppercase">
+              ⚠️ INVALID USERNAME
+            </p>
+          </div>
+
+          <button
+            id="submitButton"
+            type="submit"
+            class="btn-primary w-full py-4 text-xs"
+          >
+            AUTHORIZE ACCESS
+          </button>
+        </form>
+
+        <!-- Attention Box -->
+        <div class="p-4 rounded-xl bg-zinc-950/45 border border-zinc-800/80 text-left space-y-2">
+          <p class="text-[10px] text-zinc-500 tracking-wider font-bold">ATTENTION</p>
+          <p class="text-[10px] text-zinc-400 leading-relaxed font-sans">
+            Access is restricted to authorized credentials. Request node creation via the official Telegram account gateway.
+          </p>
+        </div>
+
+        <!-- Link -->
+        <div class="pt-2 flex flex-col gap-2">
+          <a
+            href="https://t.me/VannessWangsaff"
+            target="_blank"
+            rel="noreferrer"
+            class="btn-ghost w-full py-3.5 text-[10px] text-center"
+          >
+            CONTACT ADMINISTRATOR
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-6">
+      <p class="text-[9px] tracking-[0.2em] text-zinc-600 font-bold">POWERED BY BARR.DEV.PROJECT</p>
+    </div>
+  </div>
+
+  <script src="/js/login.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[Service Worker] Registered', reg.scope))
+          .catch(err => console.error('[Service Worker] Registration failed', err));
+      });
+    }
+  </script>
+</body>
+</html>

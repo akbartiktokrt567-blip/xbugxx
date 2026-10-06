@@ -1,0 +1,252 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --color-background: #050508;
+  --color-foreground: #e4e4e7;
+  --font-orbitron: 'Orbitron', sans-serif;
+}
+
+/* === BASE === */
+body {
+  background-color: #050508;
+  color: #e4e4e7;
+  font-family: 'Orbitron', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* === ANIMATED BACKGROUND MESH === */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-mesh::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+  top: -15%;
+  left: -10%;
+  animation: float-blob 20s ease-in-out infinite;
+}
+
+.bg-mesh::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.04) 0%, transparent 70%);
+  bottom: -10%;
+  right: -10%;
+  animation: float-blob 25s ease-in-out infinite reverse;
+}
+
+@keyframes float-blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* === GLASS SYSTEM === */
+.glass {
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+/* === INPUTS === */
+.input-glass {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #e4e4e7 !important;
+  border-radius: 14px !important;
+  padding: 14px 18px !important;
+  width: 100%;
+  outline: none;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-glass:focus {
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08), 0 0 20px rgba(99, 102, 241, 0.06) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+
+.input-glass::placeholder {
+  color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* === BUTTONS === */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.7) 0%, rgba(139, 92, 246, 0.6) 100%) !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  color: #fff !important;
+  padding: 14px 24px !important;
+  border-radius: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2) !important;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35) !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #a1a1aa !important;
+  padding: 10px 18px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #e4e4e7 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* === ANIMATIONS === */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(74, 222, 128, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(74, 222, 128, 0.7); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.anim-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-stagger-1 { animation-delay: 0.05s; opacity: 0; }
+.anim-stagger-2 { animation-delay: 0.1s; opacity: 0; }
+.anim-stagger-3 { animation-delay: 0.15s; opacity: 0; }
+.anim-stagger-4 { animation-delay: 0.2s; opacity: 0; }
+
+.glow-dot {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+
+@keyframes slide-right {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.anim-slide-right {
+  animation: slide-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.anim-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* === GLOW ACCENTS === */
+.glow-indigo {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glow-amber {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* === LABEL === */
+.label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #71717a;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.text-shimmer {
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.7) 25%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.7) 75%);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
